@@ -22,10 +22,10 @@
                 $insert = mysqli_query($conn, "INSERT INTO user (email, name, password, phone) VALUES ('$email', '$username', '$password', '$phone')");
 
                 if($insert) {
-                    header("Location: login.php?status=success");
+                    header("Location: loginKaryawan.php?status=success");
                     exit;
                 } else {
-                    $error = "Registrasi gagal. coba lagi.";
+                    $error = "Registrasi gagal. Coba lagi.";
                 }
             }
         }
@@ -45,9 +45,12 @@
         <div class="container py-5" style="max-width: 420px;">
             <div class="card">
                 <div class="card-body">
-                    <h4>Registrasi Akun</h4>
+                    <div class="container d-flex gap-5">
+                        <h4><a href="halamanAwal.php" style="text-decoration: none; color: black;">&#8592</a></h4>
+                        <h4 style="text-align: center;">Registrasi Akun</h4>
+                    </div>
                     <form method="POST">
-                        <div class="mb-3">
+                        <div class="mt-4 mb-3">
                             <label class="form-label">Email</label>
                             <input type="email" name="email" class="form-control" placeholder="Masukkan email Anda" required>
                         </div>
@@ -56,20 +59,12 @@
                             <input type="text" name="username" class="form-control" placeholder="Masukkan username Anda" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Role</label>
-                            <select name="role_id" class="form-select" required>
-                                <option value="" selected disabled>-- Pilih Role --</option>
-                                <option value="1">Admin</option>
-                                <option value="2">Karyawan</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label">Department</label>
                             <input type="text" name="username" class="form-control" placeholder="Masukkan department Anda" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">NIK</label>
-                            <input type="text" name="username" class="form-control" placeholder="Masukkan NIK Anda" required>
+                            <input type="text" name="employee_id" class="form-control" placeholder="Masukkan NIK Anda" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
@@ -78,7 +73,7 @@
 
                         <button type="submit" name="register" class="mb-3 btn btn-primary w-100">Register</button>
 
-                        <p class="text-center mb-3">Sudah punya akun? <a href="login.php"> Login</a></p>
+                        <p class="text-center mb-3">Sudah punya akun? <a href="loginKaryawan.php"> Login</a></p>
                     </form>
                 </div>
             </div>

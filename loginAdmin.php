@@ -47,10 +47,10 @@
     <div class="container py-5" style="max-width: 420px;">
         <div class="card">
             <div class="card-body">
-                <h4>Login</h4>
+                <h4 style="text-align: center;">Login</h4>
 
                 <form method="POST">
-                    <div class="mb-3">
+                    <div class="mb-3 mt-4">
                         <label class="form-label">Email/Username</label>
                         <input type="text" name="identifikasi" class="form-control" placeholder="Masukkan email/username Anda" required>
                     </div>
@@ -63,10 +63,9 @@
                         <label class="form-check-label" for="remember">Ingat email saya</label>
                     </div>
                     <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
+                    <br><br>
+                    <p class="text-center mb-3">Kembali ke halaman awal? <a href="halamanAwal.php"> Kembali</a></p>
                 </form>
-
-                <p class="text-center mt-3">Belum punya akun? <a href="register.php"> Register</a></p>
-
             </div>
         </div>
     </div>
