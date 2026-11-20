@@ -1,3 +1,16 @@
+<?php
+    session_start();
+
+    require 'connection.php';
+
+    if(!isset($_SESSION["login"])) {
+        header("Location: login.php");
+        exit;
+    }
+
+    require 'connection.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
