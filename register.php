@@ -19,7 +19,7 @@
             } else {
                 $password = password_hash($cek_password, PASSWORD_DEFAULT);
 
-                $insert = mysqli_query($conn, "INSERT INTO user (email, name, password, phone) VALUES ('$email', '$username', '$password', '$phone')");
+                $insert = mysqli_query($conn, "INSERT INTO users (department_id, employee_id, email, name, password, phone) VALUES ('$email', '$username', '$password', '$phone')");
 
                 if($insert) {
                     header("Location: loginKaryawan.php?status=success");
@@ -46,7 +46,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="container d-flex gap-5">
-                        <h4><a href="halamanAwal.php" style="text-decoration: none; color: black;">&#8592</a></h4>
+                        <h4><a href="halamanAwal.php" style="text-decoration: none; color: black;">&#8592;</a></h4>
                         <h4 style="text-align: center;">Registrasi Akun</h4>
                     </div>
                     <form method="POST">
@@ -69,6 +69,10 @@
                         <div class="mb-3">
                             <label class="form-label">Password</label>
                             <input type="password" name="password" class="form-control" placeholder="Masukkan password Anda" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="password" name="password" class="form-control" placeholder="contoh: 081234567890" required>
                         </div>
 
                         <button type="submit" name="register" class="mb-3 btn btn-primary w-100">Register</button>
