@@ -1,19 +1,23 @@
 <?php
     session_start();
-    include "../connection.php";
 
-    // if(!isset($_SESSION["user_id"])) {
-    //     header("Location: ../loginKaryawan.php");
-    //     exit();
-    // }
-
-    if($_SESSION["peran"] !== "karyawan"){
+    if (!isset($_SESSION["login"]) || $_SESSION["peran"] != "karyawan") {
         header("Location: ../halamanAwal.php");
         exit();
     }
 
-    $karyawan_id = $_SESSION["user_id"];
-    $nama_user = $_SESSION["namaLengkap"];
+    include "../connection.php";
+
+    $mode = $_GET["mode"] ?? "dashboard";
+    if ($mode == "laporan") {
+        header("Location: buatLaporan.php");
+        exit();
+    }
+
+    $karyawan_id = $_SESSION["id"] ?? $_SESSION["user_id"] ?? 0;
+    $nama_user = $_SESSION["namaLengkap"] ?? $_SESSION["nama"] ?? "Karyawan";
+    $sql = "SELECT * FROM laporan WHERE karyawan_id = '$karyawan_id' ORDER BY tanggal_lapor DESC";
+    $result = mysqli_query($conn, $sql);
 ?>
 
 <!DOCTYPE html>
@@ -24,83 +28,95 @@
     <title>Dashboard Karyawan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {background: #f8f9fa;}
         .tag {padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; background: #e3e6eb; display: inline-block;}
         .t-r {color: #dc2626}
         .t-a {color: #d97706}
         .t-g {color: #16a34a}
         .aksi {text-decoration: none; border: 1px solid #d1d5db; background: #fff; color: #1c2430; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600; display: inline-block;}
+        .aksi.edit {border-color: #d97706; color: #d97706;}
         .aksi.hapus {border-color: #dc2626; color: #dc2626;}
         .aksi.nonaktif {opacity: 0.4; background: #e5e7eb; color: #6b7280; border-color: #d1d5db; pointer-events: none; cursor: not-allowed;}
     </style>
 </head>
 <body class="bg-light">
+    <div class="container">
+        <nav class="navbar d-flex align-items-center justify-content-between">
+            <h3>Dasboard Karyawan</h3> 
+            <a href="../logout.php" class="btn btn-outline-dark">Logout</a>
+        </nav>
+
+        <div class="mt-4 mb-3">
+            <a href="?mode=dashboard" class="btn <?= $mode == "dashboard" ? "btn-dark" : "btn-outline-dark" ?>">Laporan Saya</a>
+            <a href="?mode=laporan" class="btn <?= $mode == "laporan" ? "btn-dark" : "btn-outline-dark" ?>">Buat Laporan</a>
+        </div>
+    </div>
     <header>
         <div class="container">
-            <span class="navbar-brand">Dashboard Karyawan</span>
-            <a href="../logout.php">Logout</a>
+            <p>Selamat Datang <?= htmlspecialchars($nama_user);?></p>
         </div>
     </header>
 
-    <div class="container py-4">
-        <h4>Selamat datang, <?php echo htmlspecialchars($_SESSION["namaLengkap"]);?></h4>
-    </div>
-
-    <nav>
-        <a href="dashboardKaryawan.php" class="aktif">Laporan Saya</a>
-        <a href="buatLaporan.php" class="aktif">Buat Laporan</a>
-    </nav>
-    <main>
-        <div class="card">
-            <h2>Daftar Laporan</h2>
-            <div class="wrap">
-                <table>
-                    <tr>
-                        <th>Deskripsi Laporan</th>
-                        <th>Kategori</th>
-                        <th>Lokasi</th>
-                        <th>Tanggal</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                    <?php
-                        $sql = "SELECT * FROM laporan WHERE karyawan_id = '$karyawan_id' ORDER BY tanggal_lapor DESC";
-                        $result = mysqli_query($connection, $sql);
-                        
-                        if(mysqli_num_rows($result) == 0){
-                            echo "<tr><td colspan='6'>Belum ada laporan yang dibuat.</td></tr>";
-                        }
-
-                        while($data = mysqli_fetch_assoc($result)){
+        <?php if($mode == "dashboard"):?>
+        <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Daftar Laporan</h2>
+            <div class="table-responsive">
+                <table class="table table-boarder table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Deskripsi Laporan</th>
+                            <th>Kategori</th>
+                            <th>Lokasi</th>
+                            <th>Tanggal</th>
+                            <th>Status</th>
+                            <th class="text-center" style="width: 140px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): ?>
+                        <?php while($row = mysqli_fetch_assoc($result)):
                             $warna = "";
-                            if ($data['status'] == "Menunggu Verifikasi"){
+                            if ($row['status'] == "Menunggu Verifikasi" || $row['status'] == "Ditolak"){
                                 $warna = "t-r";
-                            } else if ($data['status'] == "Sedang Ditindaklanjuti" || $data['status'] == "Dalam Perbaikan"){
+                            } else if ($row['status'] == "Sedang Ditindaklanjuti" || $row['status'] == "Dalam Perbaikan"){
                                 $warna = "t-a";
-                            } else if ($data['status'] == "Selesai"){
+                            } else if ($row['status'] == "Selesai"){
                                 $warna = "t-g";
                             } 
-                        $bisa_ubah = ($data['status'] == "Menunggu Verifikasi");
-                    ?>
+
+                            $bisa_ubah = ($row['status'] == "Menunggu Verifikasi");
+                        ?>
                     <tr>
-                        <td><?php echo $data['deskripsi']; ?></td>
-                        <td><?php echo $data['kategori']; ?></td>
-                        <td><?php echo $data['lokasi']; ?></td>
-                        <td><?php echo date("d M Y", strtotime($data['tanggal_lapor'])); ?></td>
-                        <td><span class="tag <?php echo $warna; ?>"><?php echo $data['status']; ?></span></td>
-                        <td>
-                            <?php if ($bisa_ubah) { ?>
-                                <a href="karyawan/editLaporan.php?id=<?php echo $data['id']; ?>" class="aksi edit">Edit</a>
-                                <a href="karyawan/hapusLaporan.php?id=<?php echo $data['id']; ?>" class="aksi hapus" onclick="return confirm('Yakin ingin menghapus laporan ini?')">Hapus</a>
-                            <?php } else { ?>
+                        <td><?= htmlspecialchars($row['deskripsi']); ?></td>
+                        <td><?= htmlspecialchars ($row['kategori']); ?></td>
+                        <td><?= htmlspecialchars ($row['lokasi']); ?></td>
+                        <td><?= date("d M Y", strtotime($row['tanggal_lapor'])); ?></td>
+                        <td><span class="tag <?php echo $warna; ?>"><?php echo $row['status']; ?></span></td>
+                        <td class="text-center">
+                            <?php if ($bisa_ubah): ?>
+                                <a href="editLaporan.php?id=<?php echo $row['id']; ?>" class="aksi edit">Edit</a>
+                                <a href="hapusLaporan.php?id=<?php echo $row['id']; ?>" class="aksi hapus" onclick="return confirm('Yakin ingin menghapus laporan ini?')">Hapus</a>
+                            <?php else: ?>
                                 <span class="aksi nonaktif">Edit</span>
                                 <span class="aksi nonaktif">Hapus</span>
-                            <?php } ?>
+                            <?php endif; ?>
                             </td>
                     </tr>
-                    <?php } ?>
+                    <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">Belum ada laporan yang dibuat.</td> 
+                        </tr>
+                    <?php endif; ?>
+        <?php elseif($mode == "laporan"):
+            header ("Location: karyawan/buatLaporan.php");
+            exit();
+        endif; ?> 
+                    </tbody>
                 </table>
             </div>
         </div>
-    </main>
+        </div>
 </body>
 </html>
