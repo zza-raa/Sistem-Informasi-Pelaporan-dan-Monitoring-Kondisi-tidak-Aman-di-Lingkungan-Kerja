@@ -25,9 +25,18 @@
         "Tindakan Tidak Aman" => 0
     ];
 
+    $daftar_status = [
+        "Menunggu Verifikasi",
+        "Sedang Ditindaklanjuti",
+        "Dalam Perbaikan",
+        "Selesai",
+        "Ditolak"
+    ];
+
     $hasil_status = mysqli_query($conn, "SELECT status, COUNT(*) AS jumlah FROM laporan GROUP BY status");
     $hasil_kategori = mysqli_query($conn, "SELECT kategori, COUNT(*) AS total FROM laporan GROUP BY kategori");
     $hasil_riwayat = mysqli_query($conn, "SELECT l.*, u.namaLengkap AS pelapor FROM laporan l JOIN users u ON l.karyawan_id = u.id WHERE l.status IN ('Selesai', 'Ditolak') ORDER BY l.tanggal_tutup DESC");
+    $hasil_laporan = mysqli_query($conn, "SELECT l.*, u.namaLengkap AS pelapor FROM laporan l JOIN users u ON l.karyawan_id = u.id WHERE l.status NOT IN ('Selesai', 'Ditolak') ORDER BY l.id DESC");
 
     while ($baris = mysqli_fetch_assoc($hasil_status)) {
         $jumlah_status[$baris["status"]] = $baris["jumlah"];
@@ -46,6 +55,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #sectionLaporan .table-wrapper {
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+        #sectionLaporan table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        #sectionLaporan th,
+        #sectionLaporan td {
+            border: 1px solid #d1d5db;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        #sectionLaporan th {
+            background-color: #f3f4f6;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     
@@ -135,68 +165,52 @@
             </div>
     
         <?php elseif($mode == "laporan"): ?>
-            <div class="card">
-            <h2>Laporan Aktif</h2>
-            <div class ="wrap">
-                <table>
-                    <tr>
-                        <th>Kode</th>
-                        <th>Tanggal</th>
-                        <th>Pelapor</th>
-                        <th>Deskripsi</th>
-                        <th>Kategori</th>
-                        <th>Lokasi</th>
-                        <th>Foto</th>
-                        <th>Status</th>
-                    </tr>
-                    <?php
-                    $sql = "SELECT laporan.*, users.namaLengkap FROM laporan INNER JOIN users ON laporan.karyawan_id = users.id WHERE laporan.status != 'Selesai' AND laporan.status != 'Ditolak' ORDER BY laporan.tanggal_lapor DESC, laporan.id DESC";
-                    $result = mysqli_query ($conn, $sql);
-
-                    if (mysqli_num_rows($result) == 0){
-                        echo "<tr><td colspan='6'>Tidak ada laporan aktif.</td></tr>";
-                    }
-
-                    $daftar_status = array (
-                        "Menunggu Verifikasi",
-                        "Sedang Ditindaklanjuti",
-                        "Dalam Perbaikan",
-                        "Selesai",
-                        "Ditolak"
-                    );
-
-                    while ($data = mysqli_fetch_array($result)){
-                    ?>
-                    <tr>
-                        <td><?php echo $data['kode']; ?></td>
-                        <td><?php echo $data['tanggal_lapor']; ?></td>
-                        <td><?php echo $data['namaLengkap']; ?></td>
-                        <td><?php echo $data['deskripsi']; ?></td>
-                        <td><?php echo $data['kategori']; ?></td>
-                        <td><?php echo $data['lokasi']; ?></td>
-                        <td>
-                            <?php if (!empty($data['file_lampiran'])){?>
-                                <a href="../uploads/<?php echo $data['file_lampiran']; ?>" target="_blank"><?php echo $data['file_lampiran']; ?></a>
-                            <?php } else { echo "-"; } ?>
-                        </td>
-                        <td>
-                            <form method="POST" action="ubahStatus.php" style="margin: 0;" >
-                                <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
-                                <select name="status" onchange="this.form.submit()">
-                                    <?php
-                                    foreach ($daftar_status as $st){
-                                        $selected = ($data['status'] == $st) ? "selected" : "";
-                                        echo "<option value='$st' $selected>$ts</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </table>
-            </div>
-        </div>
+            <section id="sectionLaporan">
+                <h2>Daftar Laporan</h2>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Tanggal</th>
+                                    <th>Pelapor</th>
+                                    <th>Judul</th>
+                                    <th>Kategori</th>
+                                    <th>Lokasi</th>
+                                    <th>Foto</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php while($row = mysqli_fetch_assoc($hasil_laporan)): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row["kode"]) ?></td>
+                                    <td><?= htmlspecialchars($row["tanggal_lapor"]) ?></td>
+                                    <td><?= htmlspecialchars($row["pelapor"]) ?></td>
+                                    <td><?= htmlspecialchars($row["judul"]) ?></td>
+                                    <td><?= htmlspecialchars($row["kategori"]) ?></td>
+                                    <td><?= htmlspecialchars($row["lokasi"]) ?></td>
+                                    <td><?= $row["file_lampiran"] ? '<a href="../uploads/' . htmlspecialchars($row["file_lampiran"]) . '" target="_blank">' . htmlspecialchars($row["file_lampiran"]) . '</a>' : "-" ?></td>
+                                    <td>
+                                        <form method="POST" action="?mode=laporan" style="margin: 0;">
+                                            <input type="hidden" name="aksi" value="ubah_status">
+                                            <input type="hidden" name="id" value="<?= (int) $row["id"] ?>">
+                                            <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                <?php foreach ($daftar_status as $st): ?>
+                                                    <option value="<?= htmlspecialchars($st) ?>" <?= $row["status"] == $st ? "selected" : "" ?>>
+                                                        <?= htmlspecialchars($st) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+            </section>
+>>>>>>> 5e8057f (nambahin yang else laporan dan yang dibutuhin)
 
         <?php elseif($mode == "riwayat"): ?>
             <div class="card shadow-sm">
