@@ -100,12 +100,13 @@ if(isset($_POST["simpan"])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Laporan</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body style="font-family: 'Outfit', sans-serif; background-color: #FCCC;">
     <div class="container my-4">
         <div class="col-md-6 col-lg-5 mx-auto">
-            <div class="card card-body p-4">
-                <h5 class="fw-bold mb-3">Edit Laporan</h5>     
+            <div class="card card-body p-4" style="background-color: #ffbaba;">
+                <h3 class="fw-bold mb-3" style="text-align: center;">✏️ Edit Laporan ✏️</h3>     
                 <form method="POST" enctype="multipart/form-data">
 
                     <?php if($error) : ?>
@@ -113,12 +114,12 @@ if(isset($_POST["simpan"])){
                     <?php endif; ?>
 
                     <div class="mb-3">
-                        <label class="form-label" for="judul">Judul</label>
+                        <label class="form-label" for="judul" style="font-weight: 650; font-size: larger;">Judul</label>
                         <input type="text" id="judul" name="judul" class="form-control" required value="<?= htmlspecialchars($laporan["judul"]) ?>" maxlength="150">
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label" for="kategori">Kategori</label>
+                        <label class="form-label" for="kategori" style="font-weight: 650; font-size: larger;">Kategori</label>
                         <select name="kategori" id="kategori" class="form-select" required>
                         <?php foreach($daftarKategori as $k) : ?>
                             <option value="<?= htmlspecialchars($k) ?>" <?= (($laporan["kategori"] ?? "") === $k) ? "selected" : "" ?>>
@@ -129,17 +130,17 @@ if(isset($_POST["simpan"])){
                     </div>
 
                     <div class="mb-3">
-                        <label for="lokasi" class="form-label">Lokasi</label>
+                        <label for="lokasi" class="form-label" style="font-weight: 650; font-size: larger;">Lokasi</label>
                         <input type="text" id="lokasi" name="lokasi" class="form-control" maxlength="150" required value="<?= htmlspecialchars($laporan["lokasi"]) ?>">
                     </div>
 
                     <div class="mb-3">
-                        <label for="file_lampiran" class="form-label">Ganti file (opsional)</label>
+                        <label for="file_lampiran" class="form-label" style="font-weight: 650; font-size: larger;">Ganti file (opsional)</label>
                         <input type="file" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
                     </div>
 
                     <div class="mb-3">
-                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                        <label for="deskripsi" class="form-label" style="font-weight: 650; font-size: larger;">Deskripsi</label>
                         <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4"  required><?= htmlspecialchars($laporan["deskripsi"]) ?></textarea>
                     </div>
 

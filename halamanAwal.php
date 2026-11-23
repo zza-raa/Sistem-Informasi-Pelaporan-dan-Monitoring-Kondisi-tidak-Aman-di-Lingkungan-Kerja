@@ -90,22 +90,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body style="font-family: 'Outfit', sans-serif; background-color: #FCCC;">
     <div class="container justify-content">
         <div class="d-flex gap-2 mt-3 mb-3">
-            <a href="?mode=register" class="btn <?= in_array($mode, ["karyawan", "register"]) ? "btn-dark" : "btn-outline-dark" ?>">Karyawan</a>
-            <a href="?mode=admin" class="btn <?= $mode == "admin" ? "btn-dark" : "btn-outline-dark" ?>">Admin</a>
+            <a href="?mode=register" class="btn <?= in_array($mode, ["karyawan", "register"]) ? "btn-dark" : "btn-outline-dark" ?>">👷Karyawan</a>
+            <a href="?mode=admin" class="btn <?= $mode == "admin" ? "btn-dark" : "btn-outline-dark" ?>">🛡️Admin</a>
         </div>
     
         <?php if($mode == "register"): ?>
-            <div class="card shadow-sm">
+            <div class="card shadow-sm" style="background-color: rgba(250, 237, 255, 0.8);">
                 <div class="card-body">
                     <?php if($error): ?>
                         <div class="alert alert-danger"><?= $error ?></div>
                     <?php endif; ?>
         
-                    <h2 style="text-align: center;">Daftar Karyawan</h2>
+                    <h2 style="text-align: center; font-weight: 600;">Daftar Karyawan</h2>
                     
                     <form action="?mode=register" method="post">
                         <div class="mt-3 mb-3">
@@ -130,9 +131,9 @@
             
             
         <?php else: ?>
-            <div class="card">
+            <div class="card" style="background-color: rgba(250, 237, 255, 0.8);">
                 <div class="card-body">
-                    <h2 style="text-align: center;">Login <?= $mode == "admin" ? "Admin" : "Karyawan" ?></h2>
+                    <h2 style="text-align: center; font-weight: 600;">Login <?= $mode == "admin" ? "Admin" : "Karyawan" ?></h2>
                     
                     <?php if($sukses): ?>
                         <div class="alert alert-success"><?= $sukses ?></div>

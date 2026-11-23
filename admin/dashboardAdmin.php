@@ -74,8 +74,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <style>
         #sectionLaporan .table-wrapper {
+            border-radius: 10px;
             overflow-x: auto;
             margin-top: 12px;
         }
@@ -91,18 +96,20 @@
             text-align: left;
         }
         #sectionLaporan th {
-            background-color: #f3f4f6;
+            background-color: rgb(190, 255, 233);
             font-weight: bold;
         }
     </style>
 </head>
-<body>
-    <nav class="navbar d-flex align-items-center justify-content-between">
-        <div class="container">
-            <h3>Safety Reporting System</h3> 
-            <a href="../logout.php" class="btn btn-outline-dark">Logout</a>
-        </div>
-    </nav>
+<body style="font-family: 'Outfit', sans-serif; background-color: #FCCC;">
+    <div style="background-color: rgb(230, 147, 147);">
+        <nav class="navbar d-flex align-items-center justify-content-between">
+            <div class="container">
+                <h3 style="font-weight: 600;">🦺 Safety Reporting System ⛑️</h3> 
+                <a href="../logout.php" class="btn btn-outline-dark">Logout </a>
+            </div>
+        </nav>
+    </div>
     
     <div class="container">
 
@@ -115,50 +122,50 @@
         <?php if($mode == "dashboard"): ?>
             <div class="row row-cols-6 g-3 mb-3">
                 <div class="col">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm" style="background-color: #ffffd5;">
                         <div class="card-body">
                             <p style="color: grey;">Total Laporan</p>
-                            <h2><?= $total ?></h2>
+                            <h1 style="font-weight: 750;"><?= $total ?></h1>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm" style="background-color: #ffffd5;">
                         <div class="card-body">
                             <p style="color: grey;">Menunggu Verifikasi</p>
-                            <h2><?= $jumlah_status["Menunggu Verifikasi"] ?></h2>
+                            <h1 style="font-weight: 750; color: blue;"><?= $jumlah_status["Menunggu Verifikasi"] ?></h1>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm" style="background-color: #ffffd5;">
                         <div class="card-body">
                             <p style="color: grey;">Sedang Ditindaklanjuti</p>
-                            <h2><?= $jumlah_status["Sedang Ditindaklanjuti"] ?></h2>
+                            <h1 style="font-weight: 750; color: #d97706;"><?= $jumlah_status["Sedang Ditindaklanjuti"] ?></h1>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm" style="background-color: #ffffd5;">
                         <div class="card-body">
                             <p style="color: grey;">Dalam Perbaikan</p>
-                            <h2><?= $jumlah_status["Dalam Perbaikan"] ?></h2>
+                            <h1 style="font-weight: 750; color: #FFCC00;"><?= $jumlah_status["Dalam Perbaikan"] ?></h1>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm" style="background-color: #ffffd5;">
                         <div class="card-body">
                             <p style="color: grey;">Selesai</p>
-                            <h2><?= $jumlah_status["Selesai"] ?></h2>
+                            <h1 style="font-weight: 750; color: green;"><?= $jumlah_status["Selesai"] ?></h1>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm" style="background-color: #ffffd5;">
                         <div class="card-body">
                             <p style="color: grey;">Ditolak</p>
-                            <h2><?= $jumlah_status["Ditolak"] ?></h2>
+                            <h1 style="font-weight: 750; color: red;"><?= $jumlah_status["Ditolak"] ?></h1>
                         </div>
                     </div>
                 </div>
@@ -177,7 +184,7 @@
                         </div>
 
                         <div class="progress" role="progressbar" aria-label="example with label" aria-valuenow="<?php $persen ?>" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: <?= $persen ?>%;"></div>
+                            <div class="progress-bar bg-warning" style="width: <?= $persen ?>%;"></div>
                         </div>
                         
                         <p style="font-size: small;" class="mb-2"><?= $persen?>% dari total laporan</p>
@@ -187,7 +194,7 @@
     
         <?php elseif($mode == "laporan"): ?>
             <section id="sectionLaporan">
-                <h2>Daftar Laporan</h2>
+                <h3>Daftar Laporan</h3>
                     <div class="table-wrapper">
                         <table>
                             <thead>
@@ -202,7 +209,7 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style="background-color: #ffffd5;">
                             <?php while($row = mysqli_fetch_assoc($hasil_laporan)): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row["id"]) ?></td>
@@ -212,11 +219,13 @@
                                     <td><?= htmlspecialchars($row["kategori"]) ?></td>
                                     <td><?= htmlspecialchars($row["lokasi"]) ?></td>
                                     <td>
+                                        <center>
                                         <?php if($row["file_lampiran"]) : ?>
-                                            <center>
                                                 <img src="../uploads/<?= htmlspecialchars($row["file_lampiran"]) ?>" width="125" alt="lampiran kerusakan">
-                                            </center>
+                                        <?php else: ?>
+                                            -
                                         <?php endif;?>
+                                        </center>
                                     <td>
                                         <form method="POST" action="?mode=laporan" style="margin: 0;">
                                             <input type="hidden" name="aksi" value="ubah_status">
