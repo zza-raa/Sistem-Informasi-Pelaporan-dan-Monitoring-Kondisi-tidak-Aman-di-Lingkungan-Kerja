@@ -150,6 +150,10 @@
                             <label class="form-label">Password</label>
                             <input type="password" name="password" class="form-control" placeholder="Masukkan password Anda" required>
                         </div>
+                        <div class="mb-3">
+                            <input type="checkbox" name="remember" class="form-check-input" id="remember">
+                            <label for="remember" class="form-check-label">Ingat username saya</label>
+                        </div>
             
                         <button type="submit" name="login" class="btn btn-warning w-100">Login</button>
 
