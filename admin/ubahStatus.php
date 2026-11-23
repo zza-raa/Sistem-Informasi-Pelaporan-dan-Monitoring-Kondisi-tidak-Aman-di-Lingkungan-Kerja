@@ -1,12 +1,19 @@
 <?php
-    session_start();
-    include "connection.php";
+    include "../connection.php";
 
-    if (!isset($_SESSION["status_login"]) || $_SESSION["status_login"] !== true || $_SESSION !== "admin"){
-        header("location: ../halamanAwal.php");
-        exit();
+    $id = $_POST['id'];
+    $status = $_POST['status'];
+
+    if ($status == "Selesai" || $status == "Ditolak"){
+        $sql = "UPDATE laporan SET status = '$status', tanggal_tutup = CURDATE() WHERE id = '$id'";
+    } else {
+        $sql = "UPDATE laporan SET status = '$status' WHERE id = '$id'";
     }
 
-    $kode = mysqli_real_escape_string($conection, $_POST["kode"]);
-    $statusBaru = mysqli_real_escape_string($conection, $_POST["status"]);
+    $result = mysqli_query($connection, $sql) or die(mysqli_error($connection));
+    if ($result){
+        header ("location: admin/ dataLaporan.php");
+    } else {
+        echo "Gagal Mengubah Status Laporan";
+    }
 ?>
