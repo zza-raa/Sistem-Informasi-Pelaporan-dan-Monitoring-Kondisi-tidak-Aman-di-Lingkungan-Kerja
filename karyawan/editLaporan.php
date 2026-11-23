@@ -2,19 +2,24 @@
 session_start();
 
 if(!isset($_SESSION["login"])){
-    header("Location: .../login.php");
+    header("Location: ../login.php");
     exit;
 }
 
 require '../connection.php';
 
 $error = "";
-$kategori = ["Kecelakaan Kerja", "Nyaris Celaka", "Kondisi Tidak Aman", "Tindakan Tidak Aman"];
+$daftarKategori = ["Kecelakaan Kerja", "Nyaris Celaka", "Kondisi Tidak Aman", "Tindakan Tidak Aman"];
 $id = (int)($_GET["id"] ?? 0);
 $karyawan_id = (int)$_SESSION["id"];
 
-$target = mysqli_query($conn, "SELECT * FROM laporan WHERE id = $id AND karyawan_id = $ karyawan_id");
+$target = mysqli_query($conn, "SELECT * FROM laporan WHERE id = $id AND karyawan_id = $karyawan_id AND status = 'Menunggu Verifikasi'");
 $laporan = mysqli_fetch_assoc($target);
+
+if(!$laporan){
+    header("Location: dashboardKaryawan.php");
+    exit;
+}
 
 if(isset($_POST["simpan"])){
     $judulBaru = trim($_POST["judul"]);
@@ -22,7 +27,6 @@ if(isset($_POST["simpan"])){
     $lokasiBaru = trim($_POST["lokasi"]);
     $deskripsiBaru = trim($_POST["deskripsi"]);
 
-    //isi form ga ilang kalo ada error
     $laporan["judul"] = $judulBaru;
     $laporan["kategori"] = $kategoriBaru;
     $laporan["lokasi"] = $lokasiBaru;
@@ -36,7 +40,7 @@ if(isset($_POST["simpan"])){
         $error = "Judul dan lokasi tidak boleh kosong.";
     }else if($deskripsi == ""){
         $error = "Deskripsi tidak boleh kosong.";
-    }else if(!in_array($kategoriBaru, $kategori)){
+    }else if(!in_array($kategoriBaru, $daftarKategori)){
         $error = "Kategori tidak valid.";
     }else{
         $lampiranLama = $laporan["file_lampiran"];
@@ -44,12 +48,12 @@ if(isset($_POST["simpan"])){
 
         if($_FILES["file_lampiran"]["error"] !== UPLOAD_ERR_NO_FILE){
             $namaFile = $_FILES["file_lampiran"]["name"];
-            $ukuran = $$_FILES["file_lampiran"]["size"];
+            $ukuran = $_FILES["file_lampiran"]["size"];
             $ekstensi = strtolower(pathinfo($namaFile, PATHINFO_EXTENSION));
 
-            if(!in_array($ekstensi, ["jpg", "jpeg", "png", "pdf"])){
-                $error = "Formar file tidak valid.";
-            }else if($ukuran > 2*1024*1025){
+            if(!in_array($ekstensi, ["jpg", "jpeg", "png"])){
+                $error = "Format file tidak valid.";
+            }else if($ukuran > 2*1024*1024){
                 $error = "Ukuran file maksimal 2 MB.";
             }
 
@@ -64,7 +68,7 @@ if(isset($_POST["simpan"])){
         }
 
         if($error == ""){
-            $update = mysqli_query($conn, "UPDATE laporan SET judul = '$judul', kategori = '$kategoriBaru', lokasi = '$lokasi', deskripsi = '$deskripsi', file_lampiran = '$lampiran', WHERE id = $id AND karyawa_id = $karyawan_id AND status = 'Menunggu Verifikasi'");
+            $update = mysqli_query($conn, "UPDATE laporan SET judul = '$judul', kategori = '$kategoriBaru', lokasi = '$lokasi', deskripsi = '$deskripsi', file_lampiran = '$lampiran' WHERE id = $id AND karyawan_id = $karyawan_id AND status = 'Menunggu Verifikasi'");
 
             if($update){
                 if($lampiran !== $lampiranLama && !empty($lampiranLama)){
@@ -73,9 +77,15 @@ if(isset($_POST["simpan"])){
                         unlink($path);
                     }
                 }
-                header("LOcation: dashboardKaryawan.php");
+                header("Location: dashboardKaryawan.php");
                 exit;
             }else{
+                if($lampiran !== $lampiranLama){
+                    $pathBaru = "../uploads/" . basename($lampiran);
+                    if(file_exists($pathBaru)){
+                        unlink($pathBaru);
+                    }
+                }
                 $error = "Gagal menyimpan data.";
             }
         }
@@ -89,10 +99,10 @@ if(isset($_POST["simpan"])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Laporan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div classs="container my-4">
+    <div class="container my-4">
         <div class="col-md-6 col-lg-5 mx-auto">
             <div class="card card-body p-4">
                 <h5 class="fw-bold mb-3">Edit Laporan</h5>     
@@ -111,16 +121,21 @@ if(isset($_POST["simpan"])){
                         <label class="form-label" for="kategori">Kategori</label>
                         <select name="kategori" id="kategori" class="form-select" required>
                         <?php foreach($daftarKategori as $k) : ?>
-                            <option value="<?= htmlspecialchars($k) ?>" <?= (($_POST["kategori"] ?? "") === $k) ? "selected" : "" ?>>
+                            <option value="<?= htmlspecialchars($k) ?>" <?= (($laporan["kategori"] ?? "") === $k) ? "selected" : "" ?>>
                                 <?= htmlspecialchars ($k) ?>
                             </option>
                         <?php endforeach; ?>
-                    </select>
-                </div>
+                        </select>
+                    </div>
 
                     <div class="mb-3">
                         <label for="lokasi" class="form-label">Lokasi</label>
                         <input type="text" id="lokasi" name="lokasi" class="form-control" maxlength="150" required value="<?= htmlspecialchars($laporan["lokasi"]) ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="file_lampiran" class="form-label">Ganti file (opsional)</label>
+                        <input type="file" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
                     </div>
 
                     <div class="mb-3">
@@ -130,7 +145,7 @@ if(isset($_POST["simpan"])){
 
                     <div class="d-flex gap-2">
                         <a href="dashboardKaryawan.php" class="btn btn-secondary">Batal</a>
-                        <button type="submit" name="simpan" class="btn btn-info">Simpan</button>
+                        <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>           
             </div>

@@ -67,11 +67,11 @@ if(isset($_POST["simpan"])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buat Laporan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container my-4">
-        <div class="card card-body p4">
+        <div class="card card-body p-4">
            <h5 class="fw-bold mb-4">Buat Laporan Baru</h5>
 
            <form method="POST" enctype="multipart/form-data">
@@ -104,7 +104,7 @@ if(isset($_POST["simpan"])){
 
             <div class="mb-3">
                 <label for="file_lampiran" class="form-label">Upload file (opsional)</label>
-                <input type="text" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
+                <input type="file" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
             </div>
 
             <div class="mb-4">
@@ -112,7 +112,7 @@ if(isset($_POST["simpan"])){
                 <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4" placeholder="Apa yang terjadi atau ditemukan?" required><?= htmlspecialchars($_POST["deskripsi"] ?? "") ?></textarea>
             </div>
 
-            <button class="btn btn-info" type="submit" name="Simpan"></button>
+            <button class="btn btn-info" type="submit" name="simpan">Simpan</button>
            </form>
 
         </div>

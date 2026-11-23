@@ -11,10 +11,10 @@ require '../connection.php';
 $id = (int)($_GET["id"] ?? 0);
 $karyawan_id = (int)$_SESSION["id"];
 
-$cek = mysqli_query($conn, "SELECT status FROM laporan WHERE id = $id AND karyawan_id = $karyawan_id");
+$cek = mysqli_query($conn, "SELECT status, file_lampiran FROM laporan WHERE id = $id AND karyawan_id = $karyawan_id");
 $data = mysqli_fetch_assoc($cek);
 
-if(!data){
+if(!$data){
     echo "Laporan tidak ditemukan.";
     exit;
 }
@@ -24,11 +24,11 @@ if($data["status"] !== "Menunggu Verifikasi"){
     exit;
 }
 
-$hapus = mysqli_query($conn, "DELETE FROM laporan where id = $id AND karyawan_id = $karyawan_id");
+$hapus = mysqli_query($conn, "DELETE FROM laporan WHERE id = $id AND karyawan_id = $karyawan_id AND status = 'Menunggu Verifikasi'");
 
 if($hapus){
     if(!empty($data["file_lampiran"])){
-        $path = ".../uploads/" . basename($data["file_lampiran"]);
+        $path = "../uploads/" . basename($data["file_lampiran"]);
         if(file_exists($path)){
             unlink($path);
         }
