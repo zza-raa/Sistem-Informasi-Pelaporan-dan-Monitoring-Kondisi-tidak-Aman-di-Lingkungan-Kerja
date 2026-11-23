@@ -56,6 +56,7 @@
                 if(password_verify($password, $cek["password"])){
                     session_regenerate_id(true);
                     $_SESSION["login"] = true;
+                    $_SESSION["id"] = (int)$cek["id"];
                     $_SESSION["username"] = $cek["username"];
                     $_SESSION["peran"] = $cek["peran"];
     
