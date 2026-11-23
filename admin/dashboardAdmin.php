@@ -210,7 +210,6 @@
                         </table>
                     </div>
             </section>
->>>>>>> 5e8057f (nambahin yang else laporan dan yang dibutuhin)
 
         <?php elseif($mode == "riwayat"): ?>
             <div class="card shadow-sm">
