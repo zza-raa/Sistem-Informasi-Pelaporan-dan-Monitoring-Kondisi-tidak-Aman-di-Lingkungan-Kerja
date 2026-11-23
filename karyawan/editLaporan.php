@@ -1,0 +1,140 @@
+<?php
+session_start();
+
+if(!isset($_SESSION["login"])){
+    header("Location: .../login.php");
+    exit;
+}
+
+require '../connection.php';
+
+$error = "";
+$kategori = ["Kecelakaan Kerja", "Nyaris Celaka", "Kondisi Tidak Aman", "Tindakan Tidak Aman"];
+$id = (int)($_GET["id"] ?? 0);
+$karyawan_id = (int)$_SESSION["id"];
+
+$target = mysqli_query($conn, "SELECT * FROM laporan WHERE id = $id AND karyawan_id = $ karyawan_id");
+$laporan = mysqli_fetch_assoc($target);
+
+if(isset($_POST["simpan"])){
+    $judulBaru = trim($_POST["judul"]);
+    $kategoriBaru = $_POST["kategori"];
+    $lokasiBaru = trim($_POST["lokasi"]);
+    $deskripsiBaru = trim($_POST["deskripsi"]);
+
+    //isi form ga ilang kalo ada error
+    $laporan["judul"] = $judulBaru;
+    $laporan["kategori"] = $kategoriBaru;
+    $laporan["lokasi"] = $lokasiBaru;
+    $laporan["deskripsi"] = $deskripsiBaru;
+
+    $judul = mysqli_real_escape_string($conn, $judulBaru);
+    $lokasi = mysqli_real_escape_string($conn, $lokasiBaru);
+    $deskripsi = mysqli_real_escape_string($conn, $deskripsiBaru);
+
+    if($judul == "" || $lokasi == ""){
+        $error = "Judul dan lokasi tidak boleh kosong.";
+    }else if($deskripsi == ""){
+        $error = "Deskripsi tidak boleh kosong.";
+    }else if(!in_array($kategoriBaru, $kategori)){
+        $error = "Kategori tidak valid.";
+    }else{
+        $lampiranLama = $laporan["file_lampiran"];
+        $lampiran = $lampiranLama;
+
+        if($_FILES["file_lampiran"]["error"] !== UPLOAD_ERR_NO_FILE){
+            $namaFile = $_FILES["file_lampiran"]["name"];
+            $ukuran = $$_FILES["file_lampiran"]["size"];
+            $ekstensi = strtolower(pathinfo($namaFile, PATHINFO_EXTENSION));
+
+            if(!in_array($ekstensi, ["jpg", "jpeg", "png", "pdf"])){
+                $error = "Formar file tidak valid.";
+            }else if($ukuran > 2*1024*1025){
+                $error = "Ukuran file maksimal 2 MB.";
+            }
+
+            if($error == ""){
+                $namaBaru = uniqid() . "." . $ekstensi;
+                if(move_uploaded_file($_FILES["file_lampiran"]["tmp_name"], "../uploads/" . $namaBaru)){
+                    $lampiran = $namaBaru;
+                }else{
+                    $error = "Gagal menyimpan file.";
+                }
+            }
+        }
+
+        if($error == ""){
+            $update = mysqli_query($conn, "UPDATE laporan SET judul = '$judul', kategori = '$kategoriBaru', lokasi = '$lokasi', deskripsi = '$deskripsi', file_lampiran = '$lampiran', WHERE id = $id AND karyawa_id = $karyawan_id AND status = 'Menunggu Verifikasi'");
+
+            if($update){
+                if($lampiran !== $lampiranLama && !empty($lampiranLama)){
+                    $path = "../uploads/" . basename($lampiranLama);
+                    if(file_exists($path)){
+                        unlink($path);
+                    }
+                }
+                header("LOcation: dashboardKaryawan.php");
+                exit;
+            }else{
+                $error = "Gagal menyimpan data.";
+            }
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Laporan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div classs="container my-4">
+        <div class="col-md-6 col-lg-5 mx-auto">
+            <div class="card card-body p-4">
+                <h5 class="fw-bold mb-3">Edit Laporan</h5>     
+                <form method="POST" enctype="multipart/form-data">
+
+                    <?php if($error) : ?>
+                        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                    <?php endif; ?>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="judul">Judul</label>
+                        <input type="text" id="judul" name="judul" class="form-control" required value="<?= htmlspecialchars($laporan["judul"]) ?>" maxlength="150">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="kategori">Kategori</label>
+                        <select name="kategori" id="kategori" class="form-select" required>
+                        <?php foreach($daftarKategori as $k) : ?>
+                            <option value="<?= htmlspecialchars($k) ?>" <?= (($_POST["kategori"] ?? "") === $k) ? "selected" : "" ?>>
+                                <?= htmlspecialchars ($k) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                    <div class="mb-3">
+                        <label for="lokasi" class="form-label">Lokasi</label>
+                        <input type="text" id="lokasi" name="lokasi" class="form-control" maxlength="150" required value="<?= htmlspecialchars($laporan["lokasi"]) ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                        <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4"  required><?= htmlspecialchars($laporan["deskripsi"]) ?></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="dashboardKaryawan.php" class="btn btn-secondary">Batal</a>
+                        <button type="submit" name="simpan" class="btn btn-info">Simpan</button>
+                    </div>
+                </form>           
+            </div>
+        </div>
+    </div>
+</body>
+</html>

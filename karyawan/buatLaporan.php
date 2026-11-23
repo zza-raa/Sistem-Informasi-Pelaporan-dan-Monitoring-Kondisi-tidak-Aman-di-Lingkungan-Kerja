@@ -60,3 +60,62 @@ if(isset($_POST["simpan"])){
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Laporan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container my-4">
+        <div class="card card-body p4">
+           <h5 class="fw-bold mb-4">Buat Laporan Baru</h5>
+
+           <form method="POST" enctype="multipart/form-data">
+            <?php if($error) : ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-md-4">
+                    <label class="form-label" for="judul">Judul</label>
+                    <input type="text" id="judul" name="judul" class="form-control" maxlength="150" required value="<?= htmlspecialchars($_POST["judul"] ?? "") ?>" >
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label class="form-label" for="kategori">Kategori</label>
+                    <select name="kategori" id="kategori" class="form-select" required>
+                        <?php foreach($daftarKategori as $k) : ?>
+                            <option value="<?= htmlspecialchars($k) ?>" <?= (($_POST["kategori"] ?? "") === $k) ? "selected" : "" ?>>
+                                <?= htmlspecialchars ($k) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="lokasi" class="form-label">Lokasi</label>
+                    <input type="text" id="lokasi" name="lokasi" class="form-control" placeholder="Contoh: Gedung F, Ruang 203" maxlength="150" required value="<?= htmlspecialchars($_POST["lokasi"] ?? "") ?>">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="file_lampiran" class="form-label">Upload file (opsional)</label>
+                <input type="text" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
+            </div>
+
+            <div class="mb-4">
+                <label for="deskripsi" class="form-label">Deskripsi</label>
+                <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4" placeholder="Apa yang terjadi atau ditemukan?" required><?= htmlspecialchars($_POST["deskripsi"] ?? "") ?></textarea>
+            </div>
+
+            <button class="btn btn-info" type="submit" name="Simpan"></button>
+           </form>
+
+        </div>
+    </div>
+</body>
+</html>
