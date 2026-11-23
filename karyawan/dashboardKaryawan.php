@@ -2,10 +2,10 @@
     session_start();
     include "../connection.php";
 
-    if(!isset($_SESSION["user_id"])) {
-        header("Location: ../loginKaryawan.php");
-        exit();
-    }
+    // if(!isset($_SESSION["user_id"])) {
+    //     header("Location: ../loginKaryawan.php");
+    //     exit();
+    // }
 
     if($_SESSION["peran"] !== "karyawan"){
         header("Location: ../halamanAwal.php");

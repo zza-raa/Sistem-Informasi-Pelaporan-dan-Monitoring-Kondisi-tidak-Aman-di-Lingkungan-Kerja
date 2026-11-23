@@ -2,10 +2,10 @@
     session_start();
     include "../connection.php";
     
-    if(!isset($_SESSION ['user_id']) || $_SESSION['peran'] != 'admin'){
-        header("location: ../halamanAwal.php");
-        exit();
-    }
+    // if(!isset($_SESSION ['user_id']) || $_SESSION['peran'] != 'admin'){
+    //     header("location: ../halamanAwal.php");
+    //     exit();
+    // }
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +38,7 @@
                     </tr>
                     <?php
                     $sql = "SELECT laporan.*, users.namaLengkap FROM laporan INNER JOIN users ON laporan.karyawan_id = users.id WHERE laporan.status != 'Selesai' AND laporan.status != 'Ditolak' ORDER BY laporan.tanggal_lapor DESC, laporan.id DESC";
-                    $result = mysqli_query ($connection, $sql);
+                    $result = mysqli_query ($conn, $sql);
 
                     if (mysqli_num_rows($result) == 0){
                         echo "<tr><td colspan='6'>Tidak ada laporan aktif.</td></tr>";
