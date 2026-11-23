@@ -10,7 +10,7 @@
         $sql = "UPDATE laporan SET status = '$status' WHERE id = '$id'";
     }
 
-    $result = mysqli_query($connection, $sql) or die(mysqli_error($connection));
+    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
     if ($result){
         header ("location: admin/ dataLaporan.php");
     } else {

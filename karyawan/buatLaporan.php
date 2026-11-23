@@ -112,6 +112,7 @@ if(isset($_POST["simpan"])){
                 <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4" placeholder="Apa yang terjadi atau ditemukan?" required><?= htmlspecialchars($_POST["deskripsi"] ?? "") ?></textarea>
             </div>
 
+            <a href="./dashboardKaryawan.php" class="btn btn-secondary">Batal</a>
             <button class="btn btn-info" type="submit" name="simpan">Simpan</button>
            </form>
 

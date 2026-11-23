@@ -33,6 +33,25 @@
         "Ditolak"
     ];
 
+    if(isset($_POST["aksi"]) && $_POST["aksi"] == "ubah_status") {
+        $id = (int)$_POST["id"];
+        $status_baru = mysqli_real_escape_string($conn, $_POST["status"]);
+        
+        if($id > 0 && in_array($status_baru, $daftar_status)) {
+            if ($status_baru == "Selesai" || $status_baru == "Ditolak") {
+                $update = mysqli_query($conn, "UPDATE laporan SET status = '$status_baru', tanggal_tutup = NOW() WHERE id = $id");
+            } else {
+                $update = mysqli_query($conn, "UPDATE laporan SET status = '$status_baru', tanggal_tutup = NULL WHERE id = $id");
+            }
+            if (!$update) {
+                die("Gagal update: " . mysqli_error($conn));
+            }
+        }
+
+        header("Location: ?mode=laporan");
+        exit();
+    }
+
     $hasil_status = mysqli_query($conn, "SELECT status, COUNT(*) AS jumlah FROM laporan GROUP BY status");
     $hasil_kategori = mysqli_query($conn, "SELECT kategori, COUNT(*) AS total FROM laporan GROUP BY kategori");
     $hasil_riwayat = mysqli_query($conn, "SELECT l.*, u.namaLengkap AS pelapor FROM laporan l JOIN users u ON l.karyawan_id = u.id WHERE l.status IN ('Selesai', 'Ditolak') ORDER BY l.tanggal_tutup DESC");
@@ -78,12 +97,14 @@
     </style>
 </head>
 <body>
-    
-    <div class="container">
-        <nav class="navbar d-flex align-items-center justify-content-between">
+    <nav class="navbar d-flex align-items-center justify-content-between">
+        <div class="container">
             <h3>Safety Reporting System</h3> 
             <a href="../logout.php" class="btn btn-outline-dark">Logout</a>
-        </nav>
+        </div>
+    </nav>
+    
+    <div class="container">
 
         <div class="mt-4 mb-3">
             <a href="?mode=dashboard" class="btn <?= $mode == "dashboard" ? "btn-dark" : "btn-outline-dark" ?>">Dashboard</a>
@@ -145,7 +166,7 @@
 
             <div class="card mt-4">
                 <div class="card-body">
-                    <strong>Per Kategori</strong>
+                    <p style="font-weight: 700; font-size: medium;" class="mb-2">Per Kategori</p>
                 
                     <?php foreach ($jumlah_kategori as $nama => $jumlah): ?>
                         <?php $persen = $total > 0 ? round($jumlah / $total * 100) : 0; ?>
@@ -159,7 +180,7 @@
                             <div class="progress-bar" style="width: <?= $persen ?>%;"></div>
                         </div>
                         
-                        <small><?= $persen?> dari total laporan</small>
+                        <p style="font-size: small;" class="mb-2"><?= $persen?>% dari total laporan</p>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -184,23 +205,28 @@
                             <tbody>
                             <?php while($row = mysqli_fetch_assoc($hasil_laporan)): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($row["kode"]) ?></td>
+                                    <td><?= htmlspecialchars($row["id"]) ?></td>
                                     <td><?= htmlspecialchars($row["tanggal_lapor"]) ?></td>
                                     <td><?= htmlspecialchars($row["pelapor"]) ?></td>
                                     <td><?= htmlspecialchars($row["judul"]) ?></td>
                                     <td><?= htmlspecialchars($row["kategori"]) ?></td>
                                     <td><?= htmlspecialchars($row["lokasi"]) ?></td>
-                                    <td><?= $row["file_lampiran"] ? '<a href="../uploads/' . htmlspecialchars($row["file_lampiran"]) . '" target="_blank">' . htmlspecialchars($row["file_lampiran"]) . '</a>' : "-" ?></td>
+                                    <td>
+                                        <?php if($row["file_lampiran"]) : ?>
+                                            <center>
+                                                <img src="../uploads/<?= htmlspecialchars($row["file_lampiran"]) ?>" width="125" alt="lampiran kerusakan">
+                                            </center>
+                                        <?php endif;?>
                                     <td>
                                         <form method="POST" action="?mode=laporan" style="margin: 0;">
                                             <input type="hidden" name="aksi" value="ubah_status">
                                             <input type="hidden" name="id" value="<?= (int) $row["id"] ?>">
                                             <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                                <?php foreach ($daftar_status as $st): ?>
-                                                    <option value="<?= htmlspecialchars($st) ?>" <?= $row["status"] == $st ? "selected" : "" ?>>
-                                                        <?= htmlspecialchars($st) ?>
-                                                    </option>
-                                                <?php endforeach; ?>
+                                                <option value="Menunggu Verifikasi" <?= $row["status"] == "Menunggu Verifikasi" ? "selected" : "" ?>>Menunggu Verifikasi</option>
+                                                <option value="Sedang Ditindaklanjuti" <?= $row["status"] == "Sedang Ditindaklanjuti" ? "selected" : "" ?>>Sedang Ditindaklanjuti</option>
+                                                <option value="Dalam Perbaikan" <?= $row["status"] == "Dalam Perbaikan" ? "selected" : "" ?>>Dalam Perbaikan</option>
+                                                <option value="Selesai" <?= $row["status"] == "Selesai" ? "selected" : "" ?>>Selesai</option>
+                                                <option value="Ditolak" <?= $row["status"] == "Ditolak" ? "selected" : "" ?>>Ditolak</option>
                                             </select>
                                         </form>
                                     </td>
@@ -230,7 +256,7 @@
                     <tbody>
                         <?php while($row = mysqli_fetch_assoc($hasil_riwayat)): ?>
                             <tr class="<?= $row["status"] == "Selesai" ? "table-success" : "table-danger" ?>">
-                                <td><?=  $row["kode"] ?></td>
+                                <td><?=  $row["id"] ?></td>
                                 <td><?=  $row["tanggal_lapor"] ?></td>
                                 <td><?=  htmlspecialchars($row["pelapor"]) ?></td>
                                 <td><?=  htmlspecialchars($row["judul"]) ?></td>
