@@ -48,13 +48,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    
     <div class="container">
-
-        <nav class="navbar navbar-dark">
-            <div class="d-flex justify-content-between">
-                <h3>Safety Reporting System</h3> 
-                <a href="../logout.php" class="btn btn-outline-dark">Logout</a>
-            </div>
+        <nav class="navbar d-flex align-items-center justify-content-between">
+            <h3>Safety Reporting System</h3> 
+            <a href="../logout.php" class="btn btn-outline-dark">Logout</a>
         </nav>
 
         <div class="mt-4 mb-3">
@@ -64,8 +62,8 @@
         </div>
 
         <?php if($mode == "dashboard"): ?>
-            <div class="d-flex gap-3 mb-3">
-                <div class="col-4 col-md">
+            <div class="row row-cols-6 g-3 mb-3">
+                <div class="col">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p style="color: grey;">Total Laporan</p>
@@ -73,7 +71,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4 col-md">
+                <div class="col">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p style="color: grey;">Menunggu Verifikasi</p>
@@ -81,7 +79,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4 col-md">
+                <div class="col">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p style="color: grey;">Sedang Ditindaklanjuti</p>
@@ -89,9 +87,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="d-flex gap-3 mb-3">
-                <div class="col-4 col-md">
+                <div class="col">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p style="color: grey;">Dalam Perbaikan</p>
@@ -99,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4 col-md">
+                <div class="col">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p style="color: grey;">Selesai</p>
@@ -107,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4 col-md">
+                <div class="col">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p style="color: grey;">Ditolak</p>
@@ -130,7 +126,7 @@
                         </div>
 
                         <div class="progress" role="progressbar" aria-label="example with label" aria-valuenow="<?php $persen ?>" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: <?php $persen ?>%;"></div>
+                            <div class="progress-bar" style="width: <?= $persen ?>%;"></div>
                         </div>
                         
                         <small><?= $persen?> dari total laporan</small>
