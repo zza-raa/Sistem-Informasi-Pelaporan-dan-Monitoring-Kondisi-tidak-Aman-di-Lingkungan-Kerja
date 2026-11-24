@@ -79,7 +79,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <style>
-        #sectionLaporan .table-wrapper {
+        .table-wrapper {
             border-radius: 10px;
             overflow-x: auto;
             margin-top: 12px;
@@ -96,20 +96,23 @@
             text-align: left;
         }
         #sectionLaporan th {
-            background-color: rgb(190, 255, 233);
+            background-color: #18181b;
+            color: white;
             font-weight: bold;
         }
     </style>
 </head>
-<body style="font-family: 'Outfit', sans-serif; background-color: #FCCC;">
-    <div style="background-color: rgb(230, 147, 147);">
-        <nav class="navbar d-flex align-items-center justify-content-between">
-            <div class="container">
-                <h3 style="font-weight: 600;">🦺 Safety Reporting System ⛑️</h3> 
-                <a href="../logout.php" class="btn btn-outline-dark">Logout </a>
+<body style="font-family: 'Outfit', sans-serif; background-color: #f4f4f5;">
+    <nav class="navbar bg-dark d-flex align-items-center justify-content-between" style="color: white;">
+        <div class="container">
+            <div class="d-flex gap-2">
+                <h3 style="font-weight: 600;">🦺 Safety</h3> 
+                <h3 style="font-weight: 600; color: #ffc107;"> Reporting </h3> 
+                <h3 style="font-weight: 600;"> System ⛑️</h3> 
             </div>
-        </nav>
-    </div>
+            <a href="../logout.php" class="btn btn-outline-dark btn-warning" style="font-weight: 600;">Logout </a>
+        </div>
+    </nav>
     
     <div class="container">
 
@@ -122,7 +125,7 @@
         <?php if($mode == "dashboard"): ?>
             <div class="row row-cols-6 g-3 mb-3">
                 <div class="col">
-                    <div class="card shadow-sm" style="background-color: #ffffd5;">
+                    <div class="card shadow-sm h-100 border-dark border-2">
                         <div class="card-body">
                             <p style="color: grey;">Total Laporan</p>
                             <h1 style="font-weight: 750;"><?= $total ?></h1>
@@ -130,7 +133,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm" style="background-color: #ffffd5;">
+                    <div class="card shadow-sm h-100 border-primary border-2">
                         <div class="card-body">
                             <p style="color: grey;">Menunggu Verifikasi</p>
                             <h1 style="font-weight: 750; color: blue;"><?= $jumlah_status["Menunggu Verifikasi"] ?></h1>
@@ -138,7 +141,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm" style="background-color: #ffffd5;">
+                    <div class="card shadow-sm h-100 border-warning border-2">
                         <div class="card-body">
                             <p style="color: grey;">Sedang Ditindaklanjuti</p>
                             <h1 style="font-weight: 750; color: #d97706;"><?= $jumlah_status["Sedang Ditindaklanjuti"] ?></h1>
@@ -146,7 +149,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm" style="background-color: #ffffd5;">
+                    <div class="card shadow-sm h-100 border-2" style="border-color: yellow;">
                         <div class="card-body">
                             <p style="color: grey;">Dalam Perbaikan</p>
                             <h1 style="font-weight: 750; color: #FFCC00;"><?= $jumlah_status["Dalam Perbaikan"] ?></h1>
@@ -154,7 +157,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm" style="background-color: #ffffd5;">
+                    <div class="card shadow-sm h-100 border-success border-2">
                         <div class="card-body">
                             <p style="color: grey;">Selesai</p>
                             <h1 style="font-weight: 750; color: green;"><?= $jumlah_status["Selesai"] ?></h1>
@@ -162,7 +165,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card shadow-sm" style="background-color: #ffffd5;">
+                    <div class="card shadow-sm h-100 border-danger border-2">
                         <div class="card-body">
                             <p style="color: grey;">Ditolak</p>
                             <h1 style="font-weight: 750; color: red;"><?= $jumlah_status["Ditolak"] ?></h1>
@@ -193,91 +196,102 @@
             </div>
     
         <?php elseif($mode == "laporan"): ?>
-            <section id="sectionLaporan">
-                <h3>Daftar Laporan</h3>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Tanggal</th>
-                                    <th>Pelapor</th>
-                                    <th>Judul</th>
-                                    <th>Kategori</th>
-                                    <th>Lokasi</th>
-                                    <th>Foto</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody style="background-color: #ffffd5;">
-                            <?php while($row = mysqli_fetch_assoc($hasil_laporan)): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row["id"]) ?></td>
-                                    <td><?= htmlspecialchars($row["tanggal_lapor"]) ?></td>
-                                    <td><?= htmlspecialchars($row["pelapor"]) ?></td>
-                                    <td><?= htmlspecialchars($row["judul"]) ?></td>
-                                    <td><?= htmlspecialchars($row["kategori"]) ?></td>
-                                    <td><?= htmlspecialchars($row["lokasi"]) ?></td>
-                                    <td>
-                                        <center>
-                                        <?php if($row["file_lampiran"]) : ?>
-                                                <img src="../uploads/<?= htmlspecialchars($row["file_lampiran"]) ?>" width="125" alt="lampiran kerusakan">
-                                        <?php else: ?>
-                                            -
-                                        <?php endif;?>
-                                        </center>
-                                    <td>
-                                        <form method="POST" action="?mode=laporan" style="margin: 0;">
-                                            <input type="hidden" name="aksi" value="ubah_status">
-                                            <input type="hidden" name="id" value="<?= (int) $row["id"] ?>">
-                                            <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                                <option value="Menunggu Verifikasi" <?= $row["status"] == "Menunggu Verifikasi" ? "selected" : "" ?>>Menunggu Verifikasi</option>
-                                                <option value="Sedang Ditindaklanjuti" <?= $row["status"] == "Sedang Ditindaklanjuti" ? "selected" : "" ?>>Sedang Ditindaklanjuti</option>
-                                                <option value="Dalam Perbaikan" <?= $row["status"] == "Dalam Perbaikan" ? "selected" : "" ?>>Dalam Perbaikan</option>
-                                                <option value="Selesai" <?= $row["status"] == "Selesai" ? "selected" : "" ?>>Selesai</option>
-                                                <option value="Ditolak" <?= $row["status"] == "Ditolak" ? "selected" : "" ?>>Ditolak</option>
-                                            </select>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                    </div>
-            </section>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <section id="sectionLaporan">
+                        <h3>Daftar Laporan</h3>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Kode</th>
+                                            <th>Tanggal</th>
+                                            <th>Pelapor</th>
+                                            <th>Judul</th>
+                                            <th>Kategori</th>
+                                            <th>Lokasi</th>
+                                            <th>Foto</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php while($row = mysqli_fetch_assoc($hasil_laporan)): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($row["id"]) ?></td>
+                                            <td><?= htmlspecialchars($row["tanggal_lapor"]) ?></td>
+                                            <td><?= htmlspecialchars($row["pelapor"]) ?></td>
+                                            <td><?= htmlspecialchars($row["judul"]) ?></td>
+                                            <td><?= htmlspecialchars($row["kategori"]) ?></td>
+                                            <td><?= htmlspecialchars($row["lokasi"]) ?></td>
+                                            <td>
+                                                <center>
+                                                <?php if($row["file_lampiran"]) : ?>
+                                                        <img src="../uploads/<?= htmlspecialchars($row["file_lampiran"]) ?>" width="125" alt="lampiran kerusakan">
+                                                <?php else: ?>
+                                                    -
+                                                <?php endif;?>
+                                                </center>
+                                            <td>
+                                                <form method="POST" action="?mode=laporan" style="margin: 0;">
+                                                    <input type="hidden" name="aksi" value="ubah_status">
+                                                    <input type="hidden" name="id" value="<?= (int) $row["id"] ?>">
+                                                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                        <option value="Menunggu Verifikasi" <?= $row["status"] == "Menunggu Verifikasi" ? "selected" : "" ?>>Menunggu Verifikasi</option>
+                                                        <option value="Sedang Ditindaklanjuti" <?= $row["status"] == "Sedang Ditindaklanjuti" ? "selected" : "" ?>>Sedang Ditindaklanjuti</option>
+                                                        <option value="Dalam Perbaikan" <?= $row["status"] == "Dalam Perbaikan" ? "selected" : "" ?>>Dalam Perbaikan</option>
+                                                        <option value="Selesai" <?= $row["status"] == "Selesai" ? "selected" : "" ?>>Selesai</option>
+                                                        <option value="Ditolak" <?= $row["status"] == "Ditolak" ? "selected" : "" ?>>Ditolak</option>
+                                                    </select>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                    </section>
+                </div>
+            </div>
 
         <?php elseif($mode == "riwayat"): ?>
             <div class="card shadow-sm">
-                <table class="table align-middle">
-                    <thead>
-                        <tr class="">
-                            <th>Kode</th>
-                            <th>Tgl Lapor</th>
-                            <th>Pelapor</th>
-                            <th>Judul</th>
-                            <th>Kategori</th>
-                            <th>Lokasi</th>
-                            <th>File</th>
-                            <th>Status</th>
-                            <th>Tgl Ditutup</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while($row = mysqli_fetch_assoc($hasil_riwayat)): ?>
-                            <tr class="<?= $row["status"] == "Selesai" ? "table-success" : "table-danger" ?>">
-                                <td><?=  $row["id"] ?></td>
-                                <td><?=  $row["tanggal_lapor"] ?></td>
-                                <td><?=  htmlspecialchars($row["pelapor"]) ?></td>
-                                <td><?=  htmlspecialchars($row["judul"]) ?></td>
-                                <td><?=  htmlspecialchars($row["kategori"]) ?></td>
-                                <td><?=  htmlspecialchars($row["lokasi"]) ?></td>
-                                <td><?=  $row["file_lampiran"] ? htmlspecialchars($row["file_lampiran"]) : "-" ?></td>
-                                <td><?=  $row["status"] ?></td>
-                                <td><?=  $row["tanggal_tutup"] ?></td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
+                <div class="card-body">
+                    <h2>Riwayat Laporan Selesai/Ditolak</h2>
+                    <div class="table-responsive">
+                        <div class="table-wrapper">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr class="table-dark">
+                                        <th>Kode</th>
+                                        <th>Tgl Lapor</th>
+                                        <th>Pelapor</th>
+                                        <th>Judul</th>
+                                        <th>Kategori</th>
+                                        <th>Lokasi</th>
+                                        <th>File</th>
+                                        <th>Status</th>
+                                        <th>Tgl Ditutup</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while($row = mysqli_fetch_assoc($hasil_riwayat)): ?>
+                                        <tr class="<?= $row["status"] == "Selesai" ? "table-success" : "table-danger" ?>">
+                                            <td><?=  $row["id"] ?></td>
+                                            <td><?=  $row["tanggal_lapor"] ?></td>
+                                            <td><?=  htmlspecialchars($row["pelapor"]) ?></td>
+                                            <td><?=  htmlspecialchars($row["judul"]) ?></td>
+                                            <td><?=  htmlspecialchars($row["kategori"]) ?></td>
+                                            <td><?=  htmlspecialchars($row["lokasi"]) ?></td>
+                                            <td><?=  $row["file_lampiran"] ? htmlspecialchars($row["file_lampiran"]) : "-" ?></td>
+                                            <td><?=  $row["status"] ?></td>
+                                            <td><?=  $row["tanggal_tutup"] ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>  
+                </div>
             </div>
 
         <?php endif; ?>

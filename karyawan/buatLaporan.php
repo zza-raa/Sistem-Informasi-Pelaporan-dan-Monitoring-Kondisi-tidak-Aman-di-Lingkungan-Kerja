@@ -70,53 +70,56 @@ if(isset($_POST["simpan"])){
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'Outfit', sans-serif; background-color: #FCCC;">
+<body style="font-family: 'Outfit', sans-serif; background-color: #f4f4f5;">
     <div class="container my-4">
-        <div class="card card-body p-4" style="background-color: #ffbaba;">
-           <h3 class="fw-bold mb-4" style="text-align: center;">📋 Buat Laporan Baru 📋</h3>
-
-           <form method="POST" enctype="multipart/form-data">
-            <?php if($error) : ?>
-                <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-            <?php endif; ?>
-
-            <div class="row g-3 mb-3">
-                <div class="col-12 col-md-4">
-                    <label class="form-label" for="judul" style="font-weight: 650; font-size: larger;">Judul</label>
-                    <input type="text" id="judul" name="judul" class="form-control" maxlength="150" placeholder="Masukkan judul laporan" required value="<?= htmlspecialchars($_POST["judul"] ?? "") ?>" >
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <label class="form-label" for="kategori" style="font-weight: 650; font-size: larger;">Kategori</label>
-                    <select name="kategori" id="kategori" class="form-select" required>
-                        <?php foreach($daftarKategori as $k) : ?>
-                            <option value="<?= htmlspecialchars($k) ?>" <?= (($_POST["kategori"] ?? "") === $k) ? "selected" : "" ?>>
-                                <?= htmlspecialchars ($k) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <label for="lokasi" class="form-label" style="font-weight: 650; font-size: larger;">Lokasi</label>
-                    <input type="text" id="lokasi" name="lokasi" class="form-control" placeholder="Contoh: Gedung F, Ruang 203" maxlength="150" required value="<?= htmlspecialchars($_POST["lokasi"] ?? "") ?>">
-                </div>
+        <div class="card">
+            <div class="card-header bg-dark text-white py-3 px-4;">
+                <h3 class="fw-bold px-4">📋 Buat Laporan Baru</h3>
             </div>
-
-            <div class="mb-3">
-                <label for="file_lampiran" class="form-label" style="font-weight: 650; font-size: larger;">Upload file (opsional)</label>
-                <input type="file" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
+            <div class="card-body">
+               <form method="POST" enctype="multipart/form-data">
+                <?php if($error) : ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+    
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="judul" style="font-weight: 650; font-size: larger;">Judul</label>
+                        <input type="text" id="judul" name="judul" class="form-control" maxlength="150" placeholder="Masukkan judul laporan" required value="<?= htmlspecialchars($_POST["judul"] ?? "") ?>" >
+                    </div>
+    
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="kategori" style="font-weight: 650; font-size: larger;">Kategori</label>
+                        <select name="kategori" id="kategori" class="form-select" required>
+                            <?php foreach($daftarKategori as $k) : ?>
+                                <option value="<?= htmlspecialchars($k) ?>" <?= (($_POST["kategori"] ?? "") === $k) ? "selected" : "" ?>>
+                                    <?= htmlspecialchars ($k) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+    
+                    <div class="col-12 col-md-4">
+                        <label for="lokasi" class="form-label" style="font-weight: 650; font-size: larger;">Lokasi</label>
+                        <input type="text" id="lokasi" name="lokasi" class="form-control" placeholder="Contoh: Gedung F, Ruang 203" maxlength="150" required value="<?= htmlspecialchars($_POST["lokasi"] ?? "") ?>">
+                    </div>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="file_lampiran" class="form-label" style="font-weight: 650; font-size: larger;">Upload file (opsional)</label>
+                    <input type="file" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
+                </div>
+    
+                <div class="mb-4">
+                    <label for="deskripsi" class="form-label" style="font-weight: 650; font-size: larger;">Deskripsi</label>
+                    <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4" placeholder="Apa yang terjadi atau ditemukan?" required><?= htmlspecialchars($_POST["deskripsi"] ?? "") ?></textarea>
+                </div>
+    
+                <a href="./dashboardKaryawan.php" class="btn btn-secondary">Batal</a>
+                <button class="btn btn-warning" type="submit" name="simpan">Simpan</button>
+               </form>
+    
             </div>
-
-            <div class="mb-4">
-                <label for="deskripsi" class="form-label" style="font-weight: 650; font-size: larger;">Deskripsi</label>
-                <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4" placeholder="Apa yang terjadi atau ditemukan?" required><?= htmlspecialchars($_POST["deskripsi"] ?? "") ?></textarea>
-            </div>
-
-            <a href="./dashboardKaryawan.php" class="btn btn-secondary">Batal</a>
-            <button class="btn btn-info" type="submit" name="simpan">Simpan</button>
-           </form>
-
         </div>
     </div>
 </body>

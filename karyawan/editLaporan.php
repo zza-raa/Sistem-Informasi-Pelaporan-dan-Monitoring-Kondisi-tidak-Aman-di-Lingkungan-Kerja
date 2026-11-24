@@ -102,53 +102,57 @@ if(isset($_POST["simpan"])){
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'Outfit', sans-serif; background-color: #FCCC;">
+<body style="font-family: 'Outfit', sans-serif; background-color: #f4f4f5;">
     <div class="container my-4">
-        <div class="col-md-6 col-lg-5 mx-auto">
-            <div class="card card-body p-4" style="background-color: #ffbaba;">
-                <h3 class="fw-bold mb-3" style="text-align: center;">✏️ Edit Laporan ✏️</h3>     
-                <form method="POST" enctype="multipart/form-data">
-
-                    <?php if($error) : ?>
-                        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-                    <?php endif; ?>
-
-                    <div class="mb-3">
-                        <label class="form-label" for="judul" style="font-weight: 650; font-size: larger;">Judul</label>
-                        <input type="text" id="judul" name="judul" class="form-control" required value="<?= htmlspecialchars($laporan["judul"]) ?>" maxlength="150">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label" for="kategori" style="font-weight: 650; font-size: larger;">Kategori</label>
-                        <select name="kategori" id="kategori" class="form-select" required>
-                        <?php foreach($daftarKategori as $k) : ?>
-                            <option value="<?= htmlspecialchars($k) ?>" <?= (($laporan["kategori"] ?? "") === $k) ? "selected" : "" ?>>
-                                <?= htmlspecialchars ($k) ?>
-                            </option>
-                        <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="lokasi" class="form-label" style="font-weight: 650; font-size: larger;">Lokasi</label>
-                        <input type="text" id="lokasi" name="lokasi" class="form-control" maxlength="150" required value="<?= htmlspecialchars($laporan["lokasi"]) ?>">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="file_lampiran" class="form-label" style="font-weight: 650; font-size: larger;">Ganti file (opsional)</label>
-                        <input type="file" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="deskripsi" class="form-label" style="font-weight: 650; font-size: larger;">Deskripsi</label>
-                        <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4"  required><?= htmlspecialchars($laporan["deskripsi"]) ?></textarea>
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <a href="dashboardKaryawan.php" class="btn btn-secondary">Batal</a>
-                        <button type="submit" name="simpan" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>           
+        <div class="col-lg-5 mx-auto">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="fw-bold mb-2 mt-2">✏️ Edit Laporan</h3>     
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+    
+                        <?php if($error) : ?>
+                            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                        <?php endif; ?>
+    
+                        <div class="mb-3">
+                            <label class="form-label" for="judul" style="font-weight: 650; font-size: larger;">Judul</label>
+                            <input type="text" id="judul" name="judul" class="form-control" required value="<?= htmlspecialchars($laporan["judul"]) ?>" maxlength="150">
+                        </div>
+    
+                        <div class="mb-3">
+                            <label class="form-label" for="kategori" style="font-weight: 650; font-size: larger;">Kategori</label>
+                            <select name="kategori" id="kategori" class="form-select" required>
+                            <?php foreach($daftarKategori as $k) : ?>
+                                <option value="<?= htmlspecialchars($k) ?>" <?= (($laporan["kategori"] ?? "") === $k) ? "selected" : "" ?>>
+                                    <?= htmlspecialchars ($k) ?>
+                                </option>
+                            <?php endforeach; ?>
+                            </select>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="lokasi" class="form-label" style="font-weight: 650; font-size: larger;">Lokasi</label>
+                            <input type="text" id="lokasi" name="lokasi" class="form-control" maxlength="150" required value="<?= htmlspecialchars($laporan["lokasi"]) ?>">
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="file_lampiran" class="form-label" style="font-weight: 650; font-size: larger;">Ganti file (opsional)</label>
+                            <input type="file" id="file_lampiran" name="file_lampiran" class="form-control" accept=".jpg,.jpeg,.png">
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="deskripsi" class="form-label" style="font-weight: 650; font-size: larger;">Deskripsi</label>
+                            <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4"  required><?= htmlspecialchars($laporan["deskripsi"]) ?></textarea>
+                        </div>
+    
+                        <div class="d-flex gap-2">
+                            <a href="dashboardKaryawan.php" class="btn btn-secondary">Batal</a>
+                            <button type="submit" name="simpan" class="btn btn-warning">Simpan</button>
+                        </div>
+                    </form>           
+                </div>
             </div>
         </div>
     </div>
