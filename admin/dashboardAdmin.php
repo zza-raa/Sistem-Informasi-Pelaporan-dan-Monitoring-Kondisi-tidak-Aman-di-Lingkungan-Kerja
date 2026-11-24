@@ -33,6 +33,20 @@
         "Ditolak"
     ];
 
+    $cari = mysqli_real_escape_string($conn, trim($_GET["cari"] ?? ""));
+    $filter = "";
+
+    if ($cari != ""){
+        $filter = " AND (
+            l.id LIKE '%$cari%' OR
+            l.judul LIKE '%$cari%' OR
+            u.namaLengkap LIKE '%$cari%' OR
+            l.lokasi LIKE '%$cari%' OR
+            l.kategori LIKE '%$cari%'
+        )";
+    }
+    
+
     if(isset($_POST["aksi"]) && $_POST["aksi"] == "ubah_status") {
         $id = (int)$_POST["id"];
         $status_baru = mysqli_real_escape_string($conn, $_POST["status"]);
@@ -54,8 +68,8 @@
 
     $hasil_status = mysqli_query($conn, "SELECT status, COUNT(*) AS jumlah FROM laporan GROUP BY status");
     $hasil_kategori = mysqli_query($conn, "SELECT kategori, COUNT(*) AS total FROM laporan GROUP BY kategori");
-    $hasil_riwayat = mysqli_query($conn, "SELECT l.*, u.namaLengkap AS pelapor FROM laporan l JOIN users u ON l.karyawan_id = u.id WHERE l.status IN ('Selesai', 'Ditolak') ORDER BY l.tanggal_tutup DESC");
-    $hasil_laporan = mysqli_query($conn, "SELECT l.*, u.namaLengkap AS pelapor FROM laporan l JOIN users u ON l.karyawan_id = u.id WHERE l.status NOT IN ('Selesai', 'Ditolak') ORDER BY l.id DESC");
+    $hasil_riwayat = mysqli_query($conn, "SELECT l.*, u.namaLengkap AS pelapor FROM laporan l JOIN users u ON l.karyawan_id = u.id WHERE l.status IN ('Selesai', 'Ditolak') $filter ORDER BY l.tanggal_tutup DESC");
+    $hasil_laporan = mysqli_query($conn, "SELECT l.*, u.namaLengkap AS pelapor FROM laporan l JOIN users u ON l.karyawan_id = u.id WHERE l.status NOT IN ('Selesai', 'Ditolak') $filter ORDER BY l.id DESC");
 
     while ($baris = mysqli_fetch_assoc($hasil_status)) {
         $jumlah_status[$baris["status"]] = $baris["jumlah"];
@@ -200,6 +214,17 @@
                 <div class="card-body">
                     <section id="sectionLaporan">
                         <h3>Daftar Laporan</h3>
+
+                        <!-- Pencarian -->
+                        <div>
+                            <form method="get" action="" class="d-flex gap-2">
+                                <input type="text" name="cari" class="w-100 px-2" placeholder="Cari judul, pelapor, lokasi, atau kode" value="<?= htmlspecialchars(trim($_GET["cari"] ?? "")) ?>">
+                                <input type="hidden" name="mode" value="laporan">
+                                <button type="submit" class="btn btn-warning fw-bold">Search</button>
+                                <a href="?mode=laporan" class="btn btn-secondary">Reset</a>
+                            </form>
+                        </div>
+
                             <div class="table-wrapper">
                                 <table>
                                     <thead>
@@ -257,6 +282,17 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h2>Riwayat Laporan Selesai/Ditolak</h2>
+
+                    <!-- Pencarian -->
+                    <div>
+                        <form method="get" action="" class="d-flex gap-2">
+                            <input type="text" name="cari" class="w-100 px-2" placeholder="Cari judul, pelapor, lokasi, atau kode" value="<?= htmlspecialchars(trim($_GET["cari"] ?? "")) ?>">
+                            <input type="hidden" name="mode" value="riwayat">
+                            <button type="submit" class="btn btn-warning fw-bold">Search</button>
+                            <a href="?mode=riwayat" class="btn btn-secondary">Reset</a>
+                        </form>
+                    </div>
+
                     <div class="table-responsive">
                         <div class="table-wrapper">
                             <table class="table align-middle">
