@@ -14,8 +14,10 @@
         exit();
     }
 
-    $karyawan_id = $_SESSION["id"] ?? $_SESSION["user_id"] ?? 0;
-    $nama_user = $_SESSION["namaLengkap"] ?? $_SESSION["nama"] ?? "Karyawan";
+    $karyawan_id = (int)($_SESSION["id"] ?? $_SESSION["user_id"]) ?? 0;
+    $q = mysqli_query($conn, "SELECT namaLengkap FROM users WHERE id = $karyawan_id");
+    $data = mysqli_fetch_assoc($q);
+    $name = $data["namaLengkap"] ?? "Karyawan";
     $sql = "SELECT * FROM laporan WHERE karyawan_id = '$karyawan_id' ORDER BY tanggal_lapor DESC";
     $result = mysqli_query($conn, $sql);
 ?>
@@ -63,7 +65,7 @@
         </div>
         <header>
             <div class="container">
-                <p>Selamat Datang, <?= htmlspecialchars($nama_user);?></p>
+                <p>Selamat Datang, <?= htmlspecialchars($name);?></p>
             </div>
         </header>
         
