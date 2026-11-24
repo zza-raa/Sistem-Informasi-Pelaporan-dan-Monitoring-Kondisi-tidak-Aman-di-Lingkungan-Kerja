@@ -15,6 +15,8 @@
         $mode = "karyawan";
     }
 
+    $ingat = $_COOKIE["remember_usn"] ?? "";
+
     if($mode == "register"){
         // registrasi karyawan
         if(isset($_POST["register"])) {
@@ -45,6 +47,7 @@
         }
     } else {
         if(isset($_POST["login"])) {
+            // login karyawan dan admin
             $username = mysqli_real_escape_string($conn, trim($_POST["username"]));
             $password = $_POST["password"];
             
@@ -59,7 +62,7 @@
                     $_SESSION["id"] = (int)$cek["id"];
                     $_SESSION["username"] = $cek["username"];
                     $_SESSION["peran"] = $cek["peran"];
-    
+
                     if (isset($_POST["remember"])){
                         setcookie("remember_usn", $cek["username"], time() + (24 * 60 * 60), "/");
                     } else {
@@ -149,7 +152,7 @@
                     <form action="?mode=<?= $mode ?>" method="post">
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" placeholder="Masukkan username Anda" required>
+                            <input type="text" name="username" class="form-control" placeholder="Masukkan username Anda" value="<?= htmlspecialchars($ingat) ?>" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
