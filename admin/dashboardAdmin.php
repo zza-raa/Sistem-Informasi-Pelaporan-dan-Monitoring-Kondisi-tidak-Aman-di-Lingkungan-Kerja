@@ -282,7 +282,15 @@
                                             <td><?=  htmlspecialchars($row["judul"]) ?></td>
                                             <td><?=  htmlspecialchars($row["kategori"]) ?></td>
                                             <td><?=  htmlspecialchars($row["lokasi"]) ?></td>
-                                            <td><?=  $row["file_lampiran"] ? htmlspecialchars($row["file_lampiran"]) : "-" ?></td>
+                                            <td>
+                                                <?php if(!empty($row["file_lampiran"])) : ?>
+                                                    <a href="../uploads/<?= htmlspecialchars($row["file_lampiran"]) ?>" target="_blank">
+                                                        <?= htmlspecialchars($row["file_lampiran"]) ?>
+                                                    </a>
+                                                <?php else : ?>
+                                                    -
+                                                <?php endif; ?>
+                                            </td>
                                             <td><?=  $row["status"] ?></td>
                                             <td><?=  $row["tanggal_tutup"] ?></td>
                                         </tr>
